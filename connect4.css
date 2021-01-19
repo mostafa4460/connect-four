@@ -1,9 +1,33 @@
 /* game board table */
+body {
+  background: #B2FEFA;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #0ED2F7, #B2FEFA);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #0ED2F7, #B2FEFA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  font-family: 'Pacifico', cursive;
+}
+
+#header {
+  font-size: 4rem;
+  color: red;
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+#header span {
+  color: blue;
+}
+
+#game {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 #board td {
   width: 50px;
   height: 50px;
-  border: solid 1px #666;
+  border: solid 3px #666;
 }
 
 /* pieces are div within game table cells: draw as colored circles */
@@ -30,9 +54,44 @@
 /* column-top is table row of clickable areas for each column */
 
 #column-top td {
-  border: dashed 1px lightgray;
+  border: dashed 3px lightgray;
 }
 
 #column-top td:hover {
   background-color: gold;
+  cursor: pointer;
+}
+
+/* winner is div with h2 msg and play again button, display is set to none by default until the game ends */
+
+#winner {
+  margin: 0;
+  width: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+#winner-msg {
+  margin: 0;
+  padding: 0;
+  font-size: 2rem;
+  color: blue;
+}
+
+#play-again {
+  font-family: 'Pacifico', cursive;
+  font-size: 16px;
+  border: none;
+  margin-left: 10px;
+  background: none;
+  color: red;
+  cursor: pointer;
+  outline: inherit;
+  padding: 0;
+}
+
+#play-again:hover {
+  font-weight: bold;
+  font-size: 20px;
 }

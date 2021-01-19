@@ -9,7 +9,8 @@ const WIDTH = 7;
 const HEIGHT = 6;
 
 let currPlayer = 1; // active player: 1 or 2
-const board = []; // array of rows, each row is array of cells  (board[y][x])
+let gameEnded = false;
+let board = []; // array of rows, each row is array of cells  (board[y][x])
 
 /** makeBoard: create in-JS board structure:
  *    board = array of rows, each row is array of cells  (board[y][x])
@@ -29,6 +30,9 @@ const makeBoard = () => {
 
 const makeHtmlBoard = () => {
   const htmlBoard = document.querySelector('#board');
+
+  // if there is already a board, delete it, if not, continue on to make one
+  if (htmlBoard.innerText !== '') htmlBoard.innerText = '';
 
   // create HTML row for the column tops, give it an id of "column-top", and add event listener for delegation
   const top = document.createElement("tr");
@@ -81,37 +85,50 @@ const placeInTable = (y, x) => {
 /** endGame: announce game end */
 
 const endGame = msg => {
-  alert(msg);
+  // unhide the winner div
+  const winnerDiv = document.querySelector('#winner');
+  winnerDiv.style.display = 'inline-flex';
+
+  // display the winner message
+  const winnerMsg = document.querySelector('#winner-msg');
+  winnerMsg.innerText = msg;
+
+  // add event listener to play-again btn
+  const playAgainBtn = document.querySelector('#play-again');
+  playAgainBtn.addEventListener("click", resetGame);
 };
 
 /** handleClick: handle click of column top to play piece */
 
 const handleClick = evt => {
-  // get x from ID of clicked cell
-  const x = +evt.target.id;
+  // handle click only if game is still going, otherwise do nothing
+  if (!gameEnded) {
+    // get x from ID of clicked cell
+    const x = +evt.target.id;
 
-  // get next spot in column (if none, ignore click)
-  const y = findSpotForCol(x);
-  if (y === null) {
-    return;
+    // get next spot in column (if none, ignore click)
+    const y = findSpotForCol(x);
+    if (y === null) {
+      return;
+    };
+
+    // place piece in board and add to HTML table
+    placeInTable(y, x);
+
+    // update in-memory board spot with a value of the current player (1 or 2)
+    board[y][x] = currPlayer;
+
+    // check for win
+    if (checkForWin()) {
+      return endGame(`Player ${currPlayer} won!`);
+    }
+
+    // check for tie
+    if (checkForTie()) endGame('It is a tie!');
+
+    // switch players
+    currPlayer = currPlayer === 1 ? 2 : 1;
   };
-
-  // place piece in board and add to HTML table
-  placeInTable(y, x);
-
-  // update in-memory board spot with a value of the current player (1 or 2)
-  board[y][x] = currPlayer;
-
-  // check for win
-  if (checkForWin()) {
-    return endGame(`Player ${currPlayer} won!`);
-  }
-
-  // check for tie
-  if (checkForTie()) endGame('It is a tie!');
-
-  // switch players
-  currPlayer = currPlayer === 1 ? 2 : 1;
 };
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -148,8 +165,9 @@ const checkForWin = () => {
       const diagUL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
       // check if one of these different cell combinations are all legal (actually on the HTML board) and made by the same player.
-      // if so, return true
+      // if so, set gameEnded to true, then also return true
       if (_win(horiz) || _win(vert) || _win(diagUR) || _win(diagUL)) {
+        gameEnded = true;
         return true;
       };
     };
@@ -159,7 +177,30 @@ const checkForWin = () => {
 /** checkForTie: check if all cells in board are filled */
 
 const checkForTie = () => {
-  return board.every(row => row.every(cell => cell !== null));
+  if (board.every(row => row.every(cell => cell !== null))) {
+    gameEnded = true;
+    return true;
+  };
+};
+
+/** resetGame: reset everything and make a new board */
+
+const resetGame = () => {
+  const winnerDiv = document.querySelector('#winner');
+  const winnerMsg = document.querySelector('#winner-msg');
+
+  // hide the winner div again
+  winnerDiv.style.display = 'none';
+  // reset the winner msg to nothing
+  winnerMsg.innerText = '';
+  
+  board = [];
+  currPlayer = 1;
+  gameEnded = false;
+
+  // make new in-memory board and html board
+  makeBoard();
+  makeHtmlBoard();
 };
 
 makeBoard();

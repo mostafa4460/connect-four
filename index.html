@@ -1,15 +1,21 @@
 <!doctype html>
 <head>
   <title>Connect 4</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <link href="connect4.css" rel="stylesheet">
 </head>
 <body>
+  <h1 id="header">Connect<span>4</span></h1>
+  <div id="winner">
+    <h2 id="winner-msg">Player 2 won!</h2>
+    <button id="play-again">Play again</button>
+  </div>
+  <div id="game">
+    <table id="board"></table>
+  </div>
 
-<div id="game">
-  <table id="board"></table>
-</div>
-
-<script src="connect4.js"></script>
+  <script src="connect4.js"></script>
 
 </body>
 </html>
